@@ -7,7 +7,7 @@
 
 ## Source
 
-This is a project from the (Udacity Front End Nanodegree program)[https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001 ]. The starter code can be found [here](https://github.com/udacity/fend-project-memory-game)
+This is a project from the Udacity Front End Nanodegree program: https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001. The starter code can be found [here](https://github.com/udacity/fend-project-memory-game)
 
 ## Aims
 

@@ -26,7 +26,7 @@ function createCardHtml(cardList) {
 	var cardsHtml = ""
 	for (card in cardList) {
 		var cardHtml =`
-		<li class="card">
+		<li class="` + cardList[card] + ` card" onclick="cardClicked('` + card + `')">
 	       <i class="fa fa-` + cardList[card] + `"></i>
 	    </li>`
 		cardsHtml += cardHtml
@@ -38,20 +38,89 @@ function createCardHtml(cardList) {
 function addCardHTML(cardList) {
 	var shuffledDeckHTML = createCardHtml(cardList)
 	deck.innerHTML = shuffledDeckHTML;
+	return shuffledDeckHTML
 }
 
-// calling functions
+// calling functions to create random pairs and adding randomised cards HTML into HTML
 var randomPairs = makeRandomPairs(cards)
-addCardHTML(randomPairs)
+var shuffledDeck = addCardHTML(randomPairs)
 
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+
+
+// https://stackoverflow.com/questions/19655189/javascript-click-event-listener-on-class
+
+var HTMLcards = document.getElementsByClassName("card");
+var deckHTML = document.getElementsByClassName("deck");
+
+
+
+
+var showImgOnClick = function(cardNum) {
+	HTMLcards[cardNum].classList.add("open");
+	HTMLcards[cardNum].classList.add("show");
+	HTMLcards[cardNum].removeAttribute("onclick");
+};
+
+var openCards = []
+var currentMoves = 0
+var donePairs = 0
+
+var addToOpenCards = function(cardNum) {
+	var card = HTMLcards[cardNum].classList[0]
+	console.log(cardNum)
+	console.log(card)
+
+	openCards.push([cardNum, card])
+	console.log(1, openCards)
+}
+
+var checkPair = function(cardPair) {
+	return cardPair[0][1] == cardPair[1][1]
+}
+
+var keepOpen = function(cardPair) {
+	HTMLcards[cardPair[0][0]].classList.add("match");
+	HTMLcards[cardPair[1][0]].classList.add("match");
+}
+
+var closeCards = function(cardPair) {
+	currentMoves += 1
+	moves.innerHTML = currentMoves;
+	// cool if it is ID one doesn't need to look for it with document.getElementsByClassName("moves");
+	HTMLcards[cardPair[0][0]].classList.remove("open","show");
+	HTMLcards[cardPair[1][0]].classList.remove("open","show");
+	openCards.splice(0, 2)
+}
+
+var giveBackClick = function(cardPair) {
+	HTMLcards[cardPair[0][0]].setAttribute("onclick", "cardClicked('" + cardPair[0][0] + "')");
+	HTMLcards[cardPair[1][0]].setAttribute("onclick", "cardClicked('" + cardPair[1][0] + "')" );
+}
+
+var cardClicked = function(cardNum) {
+	addToOpenCards(cardNum)
+	showImgOnClick(cardNum)
+	console.log(openCards.length, "length")
+	if (openCards.length == 3) {
+		closeCards(openCards)
+	}
+	else if (openCards.length == 2) {
+		if (checkPair(openCards)) {
+			keepOpen(openCards)
+			donePairs += 1
+			if (donePairs == 2) {
+				setTimeout(function(){ alert(
+					"Congrats! You won in " + currentMoves + " moves."
+					); }, 1000);
+			}
+		} else {
+			giveBackClick(openCards)
+		}
+	}
+	console.log(openCards, "open card end of clicked, moves: ", currentMoves)
+}
+
+
+
+

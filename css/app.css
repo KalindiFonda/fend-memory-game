@@ -16,6 +16,10 @@ body {
     padding: 0;
 }
 
+li {
+    border: red 1px solid;
+}
+
 body {
     background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
     font-family: 'Coda', cursive;
