@@ -1,19 +1,9 @@
-/*
- * Create a list that holds all of your cards
- */
+// List that holds all cards
+var cards = ['cube', 'leaf', 'paper-plane-o', 'diamond', 'bolt', 'bicycle', 'anchor', 'bomb']
 
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-// Shuffle function from http://stackoverflow.com/a/2450976
+// Shuffle function from http://stackoverflow.com/a/2450976 given by code template
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
@@ -21,9 +11,38 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
 }
+
+// Creating random pairs from array
+function makeRandomPairs(array) {
+	var pairList = (array + "," + array).split(",")
+	var randomPairArray = shuffle(pairList)
+	return randomPairArray
+}
+
+// creating card HTML
+function createCardHtml(cardList) {
+	var cardsHtml = ""
+	for (card in cardList) {
+		var cardHtml =`
+		<li class="card">
+	       <i class="fa fa-` + cardList[card] + `"></i>
+	    </li>`
+		cardsHtml += cardHtml
+	}
+	return cardsHtml
+}
+
+// Adding card HTML to page
+function addCardHTML(cardList) {
+	var shuffledDeckHTML = createCardHtml(cardList)
+	deck.innerHTML = shuffledDeckHTML;
+}
+
+// calling functions
+var randomPairs = makeRandomPairs(cards)
+addCardHTML(randomPairs)
 
 
 /*
