@@ -16,18 +16,24 @@
         </header>
 
         <section class="score-panel">
-        	<ul class="stars">
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        	</ul>
+            <ul id="stars">
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+            </ul>
 
-        	<span id="moves">0</span> Moves
+            <span id="moves">0</span> Moves in
+            <span id="timer">0</span> Secods
 
-            <div class="restart">
-        		<i class="fa fa-repeat"></i>
-        	</div>
+            <div class="restart" onclick="restart()">
+                <i class="fa fa-repeat"></i>
+            </div>
+
         </section>
+        <p class="record">
+           <span id="recordtime"> No time record yet.</span>
+           <span id="recordmoves"> No moves record yet.</span>
+        </p>
         <ul class="deck" id="deck">
             <!-- example card HTML:
                 <li class="card">
