@@ -81,7 +81,9 @@ var keepOpen = function(cardPair) {
 
 // close cards because they don't match, and remove them from open cards
 var closeCards = function(cardPair) {
+  if (openCards.length > 1) {
   HTMLcards[cardPair[0][0]].classList.remove("open","show");
+  }
   if (openCards.length > 1) {
     HTMLcards[cardPair[1][0]].classList.remove("open","show");
   }
@@ -96,20 +98,8 @@ var giveBackClick = function(cardPair) {
 }
 
 
-var getStars = function() {
-  var movesList = [2,4,6]
-  if (movesList.includes(currentMoves)) {
-    starsCount -= 1
-    stars.children[starsCount].classList.add("inactive")
-  }
-}
-
-
-
 // actions taken after card is Clicked
 var cardClicked = function(cardNum) {
-  console.log("running cardClicked")
-
   addToOpenCards(cardNum)
   showImgOnClick(cardNum)
   if (openCards.length == 3) {
@@ -131,35 +121,45 @@ var cardClicked = function(cardNum) {
   // console.log(openCards, "open card end of clicked, moves: ", currentMoves)
 }
 
-
-var starsCount = 3
-
+// code to check if the game is victory
 var checkVictory = function() {
-  if (donePairs == 1) {
-    checkRecord(timeCounter, currentMoves)
-    setTimeout(function() {
-      if (window.confirm("You won! You finished the game in " + timeCounter + " seconds, " + currentMoves +" moves and earned " + starsCount + " star/s! Do you want to play another game?")) {
-        restart();
-      } else {
-        clearInterval(gameTimer)
-      }} , 1000)
-
+  if (donePairs == 16) {
+    checkRecord()
+    if (window.confirm("You won! You finished the game in " + timeCounter + " seconds, " + currentMoves +" moves and earned " + starsCount + " star/s! Do you want to play another game?")) {
+      restart();
+    } else {
+      clearInterval(gameTimer)
+    }
   }
 }
 
-var timeCounter = 0
+// timer code
 function incrementSeconds() {
   timeCounter += 1;
   timer.innerText = timeCounter;
 }
 
+var timeCounter = 0
 var gameTimer = setInterval(incrementSeconds, 1000)
 
+// star related code
+var starsCount = 3
 var starsHTML = `
                 <li><i class="fa fa-star"></i></li>
                 <li><i class="fa fa-star"></i></li>
                 <li><i class="fa fa-star"></i></li>`
 
+// code to remove stars
+var getStars = function() {
+  var movesList = [2,4,6]
+  if (movesList.includes(currentMoves)) {
+    starsCount -= 1
+    stars.children[starsCount].classList.add("inactive")
+  }
+}
+
+
+// function to restart game.
 var restart = function () {
   console.log("running restart")
   closeCards(openCards)
@@ -173,15 +173,37 @@ var restart = function () {
   addCardHTML(randomPairs)
 }
 
-var recordData = {"timeNeededRecord": 1000, "movesNeededRecord": 1000}
-var checkRecord = function(timeNeeded, movesNeeded) {
-  if (recordData["timeNeededRecord"] > timeNeeded) {
-    recordData["timeNeededRecord"] = timeNeeded
-    recordtime.innerText = "Time record: " + recordData["timeNeededRecord"] + " seconds!!"
-  }
-  if (recordData["movesNeededRecord"] > movesNeeded) {
-    recordData["movesNeededRecord"] = movesNeeded
-    recordmoves.innerText = "Moves record: " + recordData["movesNeededRecord"] + " moves!!"
+
+var localTime = localStorage.getItem('timeNeededRecord')
+var localMoves = localStorage.getItem('movesNeededRecord')
+
+// check if there is any record stored in storage
+var checkLocalRecord = function() {
+  if (localTime) {
+    recordtime.innerText = "Time record: " + localTime + " seconds!!"
+    recordmoves.innerText = "Moves record: " + localMoves + " moves!!"
+  } else {
+    // set random numbers so that I can compare to current moves
+      localTime = 1000
+      localMoves = 1000
   }
 }
+
+checkLocalRecord()
+
+// check if new time and moves make for a record and if yes put into local storage
+var checkRecord = function() {
+
+  if (localTime > timeCounter) {
+      localStorage.setItem('timeNeededRecord', timeCounter);
+      recordtime.innerText = "Time record: " + timeCounter + " seconds!!"
+  }
+    if (localMoves > currentMoves) {
+      localStorage.setItem('movesNeededRecord', currentMoves);
+      recordmoves.innerText = "Moves record: " + currentMoves + " moves!!"
+    }
+}
+
+
+
 
