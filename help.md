@@ -10,3 +10,6 @@ example card HTML:
     <i class="fa fa-cardsimbol></i>
 </li>
 ```
+
+
+localStorage.clear();
