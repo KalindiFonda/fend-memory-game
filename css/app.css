@@ -83,14 +83,9 @@ h1 {
 }
 
 /*
- * Styles for the Score Panel
+ * Styles for the Score Panel and Setting Panel
  */
 
-.score-panel {
-    text-align: left;
-    width: 345px;
-    margin-bottom: 10px;
-}
 
 .score-panel #stars {
     margin: 0;
@@ -108,8 +103,45 @@ h1 {
     color: lightgray;
 }
 
-.score-panel .restart {
-    float: right;
+.settings-panel .restart {
     cursor: pointer;
 }
 
+.settings-panel .question {
+    cursor: help;
+}
+
+.settings-panel .separator {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.score.panel,
+.settings-panel {
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.score-leaderboards {
+    text-align: center;
+}
+
+#leaderboards {
+    display: flex;
+    justify-content: center;
+}
+
+th, td {
+    padding: 3px 15px;
+}
+
+table {
+    padding: 0 50px;
+}
+
+caption {
+    font-weight: 900;
+    font-size: 200%;
+}

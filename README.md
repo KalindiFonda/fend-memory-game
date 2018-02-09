@@ -12,3 +12,10 @@ This is a project from the Udacity Front End Nanodegree program: https://www.uda
 ## Aims
 
 Create an interactive memory game, out of a static template.
+
+
+## Help
+Code to delete local storage:
+```
+localStorage.clear();
+```

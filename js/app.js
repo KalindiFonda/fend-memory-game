@@ -23,8 +23,6 @@ function makeRandomPairs(array) {
 
 // creating card HTML
 function createCardHTML(cardList) {
-  // console.log("running createCardHTML")
-  // console.log(cardList.length, cardList);
   var cardsHtml = "";
   for (var currentCard = 0; currentCard<cardList.length; currentCard++) {
     var cardHtml =`
@@ -52,8 +50,6 @@ var HTMLcards = document.getElementsByClassName("card");
 // shows image on Click
 var showImgOnClick = function(cardNum) {
   HTMLcards[cardNum].classList.add("open", "show");
-  HTMLcards[cardNum].removeAttribute("onclick");
-  // console.log("running showImgOnClic", HTMLcards[cardNum]);
 };
 
 var openCards = [];
@@ -64,12 +60,11 @@ var donePairs = 0;
 var addToOpenCards = function(cardNum) {
   var card = HTMLcards[cardNum].classList[0];
   openCards.push([cardNum, card]);
-  // console.log("running addToOpenCards, ", "cardNum: ",cardNum, " card: ", card, "openCards: ", openCards)
 };
 
 // check if the cards in a pair match
 var checkPair = function(cardPair) {
-  return cardPair[0][1] == cardPair[1][1];
+  return cardPair[0][1] == cardPair[1][1]
 };
 
 //  keep the cards open because they are a match
@@ -81,49 +76,48 @@ var keepOpen = function(cardPair) {
 // close cards because they don't match, and remove them from open cards
 var closeCards = function(cardPair) {
   if (openCards.length > 1) {
-  HTMLcards[cardPair[0][0]].classList.remove("open","show");
-  }
-  if (openCards.length > 1) {
+    HTMLcards[cardPair[0][0]].classList.remove("open","show");
     HTMLcards[cardPair[1][0]].classList.remove("open","show");
   }
   openCards.splice(0, 2);
 };
-
-// give back click to unmatched pair
-var giveBackClick = function(cardPair) {
-  // console.log("running give back click");
-  HTMLcards[cardPair[0][0]].setAttribute("onclick", "cardClicked('" + cardPair[0][0] + "')");
-  HTMLcards[cardPair[1][0]].setAttribute("onclick", "cardClicked('" + cardPair[1][0] + "')");
-};
-
+//includes("match")
 
 // actions taken after card is Clicked
 var cardClicked = function(cardNum) {
-  addToOpenCards(cardNum);
-  showImgOnClick(cardNum);
-  if (openCards.length == 3) {
-    closeCards(openCards);
+  if (HTMLcards[cardNum].classList[4] == "match") {
+    return
+  } else {
+    if (openCards.length == 1) {
+      if (HTMLcards[cardNum].classList[2] == "open") {
+        console.log("open inside" )
+        return
+      }
+    }
+    addToOpenCards(cardNum);
     showImgOnClick(cardNum);
-  } else if (openCards.length == 2) {
-    currentMoves += 1;
-    moves.innerHTML = currentMoves;
-    // cool if it is ID one doesn't need to look for it with document.getElementsByClassName("moves");
-    getStars();
-    if (checkPair(openCards)) {
-      keepOpen(openCards);
-      donePairs += 1;
-      checkVictory();
-    } else {
-      giveBackClick(openCards);
+    if (openCards.length == 3) {
+      closeCards(openCards);
+      showImgOnClick(cardNum);
+    } else if (openCards.length == 2) {
+      currentMoves += 1;
+      moves.innerHTML = currentMoves;
+      // cool if it is ID one doesn't need to look for it with document.getElementsByClassName("moves");
+      getStars();
+      if (checkPair(openCards)) {
+        keepOpen(openCards);
+        donePairs += 1;
+        checkVictory();
+      }
     }
   }
-  // console.log(openCards, "open card end of clicked, moves: ", currentMoves)
 };
 
 // code to check if the game is victory
 var checkVictory = function() {
-  if (donePairs == 1) {
-    checkRecord();
+  if (donePairs == 8) {
+    addCurrentGame()
+    updateLeaderborad()
     setTimeout(function () {
       if (window.confirm("You won! You finished the game in " + timeCounter + " seconds, " + currentMoves +" moves and earned " + starsCount + " star/s! Do you want to play another game?")
       ) {
@@ -152,7 +146,7 @@ var starsHTML = `
 
 // code to remove stars
 var getStars = function() {
-  var movesList = [2,4,6];
+  var movesList = [12,16,20];
   if (movesList.includes(currentMoves)) {
     starsCount -= 1;
     stars.children[starsCount].classList.add("inactive");
@@ -162,7 +156,6 @@ var getStars = function() {
 
 // function to restart game.
 var restart = function () {
-  //console.log("running restart");
   closeCards(openCards);
   timeCounter = 0;
   currentMoves = 0;
@@ -174,34 +167,120 @@ var restart = function () {
   addCardHTML(randomPairs);
 };
 
-
-var localTime = localStorage.getItem('timeNeededRecord');
-var localMoves = localStorage.getItem('movesNeededRecord');
-
-// check if there is any record stored in storage
-var checkLocalRecord = function() {
-  if (localTime) {
-    recordtime.innerText = "Time record: " + localTime + " seconds!!";
-    recordmoves.innerText = "Moves record: " + localMoves + " moves!!";
-  } else {
-    // set random numbers so that I can compare to current moves
-      localTime = 1000;
-      localMoves = 1000;
-  }
-};
-
-checkLocalRecord();
-
-// check if new time and moves make for a record and if yes put into local storage
-var checkRecord = function() {
-
-  if (localTime > timeCounter) {
-      localStorage.setItem('timeNeededRecord', timeCounter);
-      recordtime.innerText = "Time record: " + timeCounter + " seconds!!";
-  }
-    if (localMoves > currentMoves) {
-      localStorage.setItem('movesNeededRecord', currentMoves);
-      recordmoves.innerText = "Moves record: " + currentMoves + " moves!!";
+var userName = "user"
+// get user name for record as well as hello
+var getName = function() {
+  userName = prompt("Welcome to this game! Please enter your name:", userName);
+  console.log(userName)
+    if (userName != null && userName !== "user") {
+        hello.innerHTML = "Hello " + userName + "! How are you today?";
     }
-};
+}
+getName()
 
+
+// code to allow gmeplay with keyboard
+var keyMap = {
+    49: 0, 50: 1, 51: 2, 52: 3, // first line of keys
+    81: 4, 87: 5, 69: 6, 82: 7, // second line of keys
+    65: 8, 83: 9, 68: 10, 70: 11, // third line of keys
+    192: 12, 90: 13, 88: 14, 67: 15 // fourth line of keys
+}
+
+// map key to card, and run the click function
+var mapKey = function(event) {
+    if (event.keyCode in keyMap) {
+        cardClicked(keyMap[event.keyCode])
+      }
+}
+
+// create event listener if user chooses to play with keyboard
+var checkCheck = function() {
+  if (check.checked == true) {
+    window.addEventListener("keydown", mapKey, true);
+  } else {
+    window.removeEventListener("keydown", mapKey, true);
+  }
+}
+
+// leaderboards
+var gamesList = JSON.parse(localStorage.getItem('gamesList'));
+
+// add  current game to local Storage
+var addCurrentGame = function() {
+  gamesList = JSON.parse(localStorage.getItem('gamesList'));
+  var currentGame = {
+      time: timeCounter,
+      moves: currentMoves,
+      name: userName
+    }
+  if (gamesList !== null) {
+    gamesList.push(currentGame)
+  } else {
+    gamesList = [currentGame]
+  }
+  localStorage.setItem('gamesList', JSON.stringify(gamesList));
+  updateLeaderborad()
+}
+
+
+// update Leaderboard
+var updateLeaderborad = function() {
+  gamesList = JSON.parse(localStorage.getItem('gamesList'));
+  if (gamesList !== null) {
+    var gamesBestTimes = gamesList.slice()
+    getBestTimes(gamesBestTimes)
+    var gamesBestMoves = gamesList.slice()
+    getBestMoves(gamesBestMoves)
+    var leaderboardsHTML = `<table>
+        <caption>Best times</caption>
+        ` + makeLeaderboardHTML(gamesBestTimes) + `
+        </table>
+        <table>
+        <caption>Best moves</caption>
+        ` + makeLeaderboardHTML(gamesBestMoves) + `
+        </table>`
+    leaderboards.innerHTML = leaderboardsHTML
+  }
+}
+
+// make HTML for leaderbords out of locally stored game data
+var makeLeaderboardHTML  = function(gamesListSorted) {
+  var leaderboardHTML = `
+        <tr>
+          <th>Name</th>
+          <th>Time</th>
+          <th>Moves</th>
+        </tr>`
+  for (var game = 0; game < gamesListSorted.length; game++) {
+    if (game == 5) {
+      break
+    } else {
+      var gameHTML = `
+        <tr>
+          <td>` + gamesListSorted[game].name + `</td>
+          <td>` + gamesListSorted[game].time + `</td>
+          <td>` + gamesListSorted[game].moves + `</td>
+        </tr>`
+      leaderboardHTML += gameHTML
+    }
+
+  }
+  return leaderboardHTML
+}
+
+// sort function for best times
+// code taken from here https://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
+var getBestTimes = function(games) {
+  games.sort(function(a, b) {
+    return parseInt(a.time) - parseInt(b.time);
+  });
+}
+
+var getBestMoves = function(games) {
+  games.sort(function(a, b) {
+    return parseInt(a.moves) - parseInt(b.moves);
+  });
+}
+
+updateLeaderborad()
