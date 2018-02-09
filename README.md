@@ -4,18 +4,31 @@
 
 * [Source](#source)
 * [Aims](#aims)
+* [Project Description](#project-description)
+* [Implemented Features](#features)
+* [Helper code](#helper-code)
 
 ## Source
 
 This is a project from the Udacity Front End Nanodegree program: https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001. The starter code can be found [here](https://github.com/udacity/fend-project-memory-game).
 
-## Aims
+## Project Description
 
-Create an interactive memory game, out of a static template.
+Students are given a static template with 16 cards. The point of the project is to create an interactive memory game, where all the game mechanics work. The student is free to add extra elements
 
 
-## Help
+## Implemented Features
+
+16 shuffled pairs on board.
+Restart button.
+Time, moves and star counter.
+User name.
+Ability to play directly from the keyboard.
+Local Storage Leaderboard.
+
+## Helper Code
+
 Code to delete local storage:
-```
+```python
 localStorage.clear();
 ```

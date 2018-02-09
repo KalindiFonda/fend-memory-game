@@ -189,14 +189,26 @@ var keyMap = {
 
 // map key to card, and run the click function
 var mapKey = function(event) {
-    if (event.keyCode in keyMap) {
-        cardClicked(keyMap[event.keyCode])
-      }
+  if (event.keyCode in keyMap) {
+      cardClicked(keyMap[event.keyCode])
+    }
 }
+
+// create event listener for keyboard shortcut to play with keys
+window.addEventListener('keydown', function(event) {
+  if ( event.keyCode == 75 ) {
+    if ( check.checked === true ) {
+      check.checked = false;
+    } else {
+      check.checked = true;
+    }
+    checkCheck();
+  }
+}, false);
 
 // create event listener if user chooses to play with keyboard
 var checkCheck = function() {
-  if (check.checked == true) {
+  if (check.checked == true ) {
     window.addEventListener("keydown", mapKey, true);
   } else {
     window.removeEventListener("keydown", mapKey, true);
