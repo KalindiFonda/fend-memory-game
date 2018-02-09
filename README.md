@@ -19,12 +19,12 @@ Students are given a static template with 16 cards. The point of the project is 
 
 ## Implemented Features
 
-16 shuffled pairs on board.
-Restart button.
-Time, moves and star counter.
-User name.
-Ability to play directly from the keyboard.
-Local Storage Leaderboard.
+- 16 shuffled pairs on board.
+- Restart button.
+- Time, moves and star counter.
+- User name.
+- Ability to play directly from the keyboard.
+- Local Storage Leaderboard.
 
 ## Helper Code
 
