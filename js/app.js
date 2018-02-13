@@ -64,7 +64,7 @@ var addToOpenCards = function(cardNum) {
 
 // check if the cards in a pair match
 var checkPair = function(cardPair) {
-  return cardPair[0][1] == cardPair[1][1]
+  return cardPair[0][1] == cardPair[1][1];
 };
 
 //  keep the cards open because they are a match
@@ -83,15 +83,16 @@ var closeCards = function(cardPair) {
 };
 //includes("match")
 
+var gameON = false;
 // actions taken after card is Clicked
 var cardClicked = function(cardNum) {
+  gameON = true;
   if (HTMLcards[cardNum].classList[4] == "match") {
-    return
+    return;
   } else {
     if (openCards.length == 1) {
       if (HTMLcards[cardNum].classList[2] == "open") {
-        console.log("open inside" )
-        return
+        return;
       }
     }
     addToOpenCards(cardNum);
@@ -116,22 +117,24 @@ var cardClicked = function(cardNum) {
 // code to check if the game is victory
 var checkVictory = function() {
   if (donePairs == 8) {
-    addCurrentGame()
-    updateLeaderborad()
+    addCurrentGame();
+    updateLeaderborad();
     setTimeout(function () {
       if (window.confirm("You won! You finished the game in " + timeCounter + " seconds, " + currentMoves +" moves and earned " + starsCount + " star/s! Do you want to play another game?")
       ) {
         restart();
       } else {
       clearInterval(gameTimer);
-    };}, 300);
+    }}, 300);
   }
 };
 
 // timer code
 function incrementSeconds() {
-  timeCounter += 1;
-  timer.innerText = timeCounter;
+  if (gameON) {
+    timeCounter += 1;
+    timer.innerText = timeCounter;
+  }
 }
 
 var timeCounter = 0;
@@ -146,8 +149,9 @@ var starsHTML = `
 
 // code to remove stars
 var getStars = function() {
-  var movesList = [12,16,20];
-  if (movesList.includes(currentMoves)) {
+  var movesRemoveStarList = [12,16];
+  // [12,16, 20]; I'd prefer having 0 stars too
+  if (movesRemoveStarList.includes(currentMoves)) {
     starsCount -= 1;
     stars.children[starsCount].classList.add("inactive");
   }
@@ -158,25 +162,26 @@ var getStars = function() {
 var restart = function () {
   closeCards(openCards);
   timeCounter = 0;
+  gameON = false;
   currentMoves = 0;
   donePairs = 0;
   starsCount = 3;
   stars.innerHTML = starsHTML;
   moves.innerHTML = currentMoves;
+  timer.innerText = timeCounter;
   randomPairs = makeRandomPairs(cardPairs);
   addCardHTML(randomPairs);
 };
 
-var userName = "user"
+var userName = "user";
 // get user name for record as well as hello
 var getName = function() {
-  userName = prompt("Welcome to this game! Please enter your name:", userName);
-  console.log(userName)
-    if (userName != null && userName !== "user") {
+  userName = prompt("Welcome to this game! Please enter your name! It'll be used for the local leaderboard.", userName);
+    if (userName !== null && userName !== "user") {
         hello.innerHTML = "Hello " + userName + "! How are you today?";
     }
-}
-getName()
+};
+getName();
 
 
 // code to allow gmeplay with keyboard
@@ -185,35 +190,43 @@ var keyMap = {
     81: 4, 87: 5, 69: 6, 82: 7, // second line of keys
     65: 8, 83: 9, 68: 10, 70: 11, // third line of keys
     192: 12, 90: 13, 88: 14, 67: 15 // fourth line of keys
-}
+};
 
 // map key to card, and run the click function
 var mapKey = function(event) {
   if (event.keyCode in keyMap) {
-      cardClicked(keyMap[event.keyCode])
+      cardClicked(keyMap[event.keyCode]);
     }
-}
+};
 
-// create event listener for keyboard shortcut to play with keys
-window.addEventListener('keydown', function(event) {
-  if ( event.keyCode == 75 ) {
-    if ( check.checked === true ) {
-      check.checked = false;
-    } else {
-      check.checked = true;
+// create event listener for keyboard shortcut to play with keys and to restart game
+
+var  keyCommands = function() {
+  window.addEventListener('keydown', function(event) {
+    if ( event.keyCode == 75 ) {
+      if ( check.checked === true ) {
+        check.checked = false;
+      } else {
+        check.checked = true;
+      }
+      checkCheck();
     }
-    checkCheck();
-  }
-}, false);
+    if ( event.keyCode == 78 && event.shiftKey ) {
+      restart();
+    }
+  }, false);
+};
+
+keyCommands();
 
 // create event listener if user chooses to play with keyboard
 var checkCheck = function() {
-  if (check.checked == true ) {
+  if (check.checked === true ) {
     window.addEventListener("keydown", mapKey, true);
   } else {
     window.removeEventListener("keydown", mapKey, true);
   }
-}
+};
 
 // leaderboards
 var gamesList = JSON.parse(localStorage.getItem('gamesList'));
@@ -225,25 +238,25 @@ var addCurrentGame = function() {
       time: timeCounter,
       moves: currentMoves,
       name: userName
-    }
+    };
   if (gamesList !== null) {
-    gamesList.push(currentGame)
+    gamesList.push(currentGame);
   } else {
-    gamesList = [currentGame]
+    gamesList = [currentGame];
   }
   localStorage.setItem('gamesList', JSON.stringify(gamesList));
-  updateLeaderborad()
-}
+  updateLeaderborad();
+};
 
 
 // update Leaderboard
 var updateLeaderborad = function() {
   gamesList = JSON.parse(localStorage.getItem('gamesList'));
   if (gamesList !== null) {
-    var gamesBestTimes = gamesList.slice()
-    getBestTimes(gamesBestTimes)
-    var gamesBestMoves = gamesList.slice()
-    getBestMoves(gamesBestMoves)
+    var gamesBestTimes = gamesList.slice();
+    getBestTimes(gamesBestTimes);
+    var gamesBestMoves = gamesList.slice();
+    getBestMoves(gamesBestMoves);
     var leaderboardsHTML = `<table>
         <caption>Best times</caption>
         ` + makeLeaderboardHTML(gamesBestTimes) + `
@@ -251,10 +264,10 @@ var updateLeaderborad = function() {
         <table>
         <caption>Best moves</caption>
         ` + makeLeaderboardHTML(gamesBestMoves) + `
-        </table>`
-    leaderboards.innerHTML = leaderboardsHTML
+        </table>`;
+    leaderboards.innerHTML = leaderboardsHTML;
   }
-}
+};
 
 // make HTML for leaderbords out of locally stored game data
 var makeLeaderboardHTML  = function(gamesListSorted) {
@@ -263,23 +276,23 @@ var makeLeaderboardHTML  = function(gamesListSorted) {
           <th>Name</th>
           <th>Time</th>
           <th>Moves</th>
-        </tr>`
+        </tr>`;
   for (var game = 0; game < gamesListSorted.length; game++) {
     if (game == 5) {
-      break
+      break;
     } else {
       var gameHTML = `
         <tr>
           <td>` + gamesListSorted[game].name + `</td>
           <td>` + gamesListSorted[game].time + `</td>
           <td>` + gamesListSorted[game].moves + `</td>
-        </tr>`
-      leaderboardHTML += gameHTML
+        </tr>`;
+      leaderboardHTML += gameHTML;
     }
 
   }
-  return leaderboardHTML
-}
+  return leaderboardHTML;
+};
 
 // sort function for best times
 // code taken from here https://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
@@ -287,12 +300,12 @@ var getBestTimes = function(games) {
   games.sort(function(a, b) {
     return parseInt(a.time) - parseInt(b.time);
   });
-}
+};
 
 var getBestMoves = function(games) {
   games.sort(function(a, b) {
     return parseInt(a.moves) - parseInt(b.moves);
   });
-}
+};
 
-updateLeaderborad()
+updateLeaderborad();
