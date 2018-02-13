@@ -4,15 +4,15 @@ var cardPairs =  (cards + "," + cards).split(",");
 
 // Shuffle function from http://stackoverflow.com/a/2450976 given by code template
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-    return array;
+  var currentIndex = array.length, temporaryValue, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
 }
 
 // Creating random pairs from array
@@ -186,10 +186,10 @@ getName();
 
 // code to allow gmeplay with keyboard
 var keyMap = {
-    49: 0, 50: 1, 51: 2, 52: 3, // first line of keys
-    81: 4, 87: 5, 69: 6, 82: 7, // second line of keys
-    65: 8, 83: 9, 68: 10, 70: 11, // third line of keys
-    192: 12, 90: 13, 88: 14, 67: 15 // fourth line of keys
+  49: 0, 50: 1, 51: 2, 52: 3, // first line of keys
+  81: 4, 87: 5, 69: 6, 82: 7, // second line of keys
+  65: 8, 83: 9, 68: 10, 70: 11, // third line of keys
+  192: 12, 90: 13, 88: 14, 67: 15 // fourth line of keys
 };
 
 // map key to card, and run the click function
@@ -235,10 +235,10 @@ var gamesList = JSON.parse(localStorage.getItem('gamesList'));
 var addCurrentGame = function() {
   gamesList = JSON.parse(localStorage.getItem('gamesList'));
   var currentGame = {
-      time: timeCounter,
-      moves: currentMoves,
-      name: userName
-    };
+    time: timeCounter,
+    moves: currentMoves,
+    name: userName
+  };
   if (gamesList !== null) {
     gamesList.push(currentGame);
   } else {
